@@ -18,10 +18,10 @@ public class GamesObject {
     private String foreignTeam;
 
     @Column
-    private String homeScore;
+    private int homeScore;
 
     @Column
-    private String foreignScore;
+    private int foreignScore;
 
     @Column
     private Boolean isLive;
@@ -30,7 +30,7 @@ public class GamesObject {
 
 
 
-    public GamesObject( String gameSession, String homeTeam, String foreignTeam, String homeScore, String foreignScore, Boolean isLive, String userId) {
+    public GamesObject( String gameSession, String homeTeam, String foreignTeam, int homeScore, int foreignScore, Boolean isLive, String userId) {
 
         this.gameSession = gameSession;
         this.homeTeam = homeTeam;
@@ -81,19 +81,19 @@ public class GamesObject {
         this.foreignTeam = foreignTeam;
     }
 
-    public String getHomeScore() {
+    public int getHomeScore() {
         return homeScore;
     }
 
-    public void setHomeScore(String homeScore) {
+    public void setHomeScore(int homeScore) {
         this.homeScore = homeScore;
     }
 
-    public String getForeignScore() {
+    public int getForeignScore() {
         return foreignScore;
     }
 
-    public void setForeignScore(String foreignScore) {
+    public void setForeignScore(int foreignScore) {
         this.foreignScore = foreignScore;
     }
 

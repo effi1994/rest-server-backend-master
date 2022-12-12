@@ -34,7 +34,7 @@ public class Persist {
     public void createConnectionToDatabase () {
         try {
             this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/football_project", "root", "1234");
+                    "jdbc:mysql://localhost:3306/football_project?autoReconnect=true&useSSL=false", "root", "1234");
             System.out.println("Successfully connected to DB");
           this.defaultDBContent();
             System.out.println();
@@ -45,7 +45,9 @@ public class Persist {
 
     public void defaultDBContent (){
         if (this.isTableUsersEmpty()){
-            UserObject userObject=new UserObject("admin","123456","123456");
+            Utils utils =new Utils();
+            String token = utils.createHash("admin", "123456");
+            UserObject userObject=new UserObject("admin",token);
             this.addUserHibernate(userObject);
         }
 
@@ -64,7 +66,9 @@ public class Persist {
                     "Juventus",
                     "Sevilla FC",
                     "Roma"} ;
-            UserObject userObject=new UserObject("admin","123456","123456");
+            Utils utils =new Utils();
+            String token = utils.createHash("admin", "123456");
+            UserObject userObject=new UserObject("admin",token);
             userObject.setId(1);
 
             for (int i = 0; i < teamNames.length; i++) {
@@ -115,14 +119,6 @@ public class Persist {
         return allTeams;
     }
 
-    /*public List<UserObject> getAllUsersHibernate () {
-        Session session = sessionFactory.openSession();
-        UserObject userObject = new UserObject();
-        session.save(userObject);
-        List<UserObject> userObjects = session.createQuery("FROM UserObject ").list();
-        session.close();
-        return userObjects;
-    }*/
 
     public boolean usernameAvailableHibernate(String username){
         boolean available = false;
@@ -162,9 +158,19 @@ public class Persist {
 
 
 
+    public void updateGameHibernate(GamesObject gamesObject){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(gamesObject);
+        session.getTransaction().commit();
+        session.close();
+    }
 
-
-
+    public void updateTeamsHibernate(TeamsObject teamsObject){
+        Session session = sessionFactory.openSession();
+        session.update(teamsObject);
+        session.close();
+    }
 
     public void addUserHibernate(UserObject userObject){
         Session session = sessionFactory.openSession();
@@ -195,102 +201,15 @@ public class Persist {
         return isEmpty;
     }
 
-  /* public void addUser (String username, String token) {
-        try {
-            PreparedStatement preparedStatement =
-                    this.connection
-                            .prepareStatement("INSERT INTO users (username, token) VALUE (?,?)");
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, token);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public UserObject getUserByLoginHibernate(String username, String token){
+        UserObject userObject = null;
+        Session session = sessionFactory.openSession();
+        userObject = (UserObject) session.createQuery("FROM UserObject where  username=:username AND token=:token").
+                   setParameter("username",username).setParameter("token",token)
+                .uniqueResult();
+        session.close();
+        return userObject;
     }
 
-    public boolean usernameAvailable (String username) {
-        boolean available = false;
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(
-                    "SELECT id " +
-                    "FROM users " +
-                    "WHERE username = ?");
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                available = false;
-            } else {
-                available = true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return available;
-    }
-
-    public User getUserByToken (String token) {
-        User user = null;
-        try {
-            PreparedStatement preparedStatement = this.connection
-                    .prepareStatement(
-                            "SELECT id, username FROM users WHERE token = ?");
-            preparedStatement.setString(1, token);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String username = resultSet.getString("username");
-                user = new User(username, token);
-                user.setId(id);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return user;
-    }
-
-    public void addNote (int userId, String content) {
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO notes (content, user_id) VALUE (?, ?)");
-            preparedStatement.setString(1, content);
-            preparedStatement.setInt(2, userId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-        }
-    }
-
-    public List<String> getNotesByUserId (int userId) {
-        List<String> notes = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT content FROM notes WHERE user_id = ?");
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String content = resultSet.getString("content");
-                notes.add(content);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return notes;
-    }
-
-    public String getUserByCreds (String username, String token) {
-        String response = null;
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(
-                    "SELECT * FROM users WHERE username = ? AND token = ?");
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, token);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                response = token;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
-    }*/
 
 }
