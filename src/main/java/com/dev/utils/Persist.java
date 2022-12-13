@@ -148,10 +148,12 @@ public class Persist {
         return gamesObjects;
     }
 
-    public void addGameHibernate(GamesObject gamesObject){
+    public void addGamesHibernate(List<GamesObject> gamesObjects){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.save(gamesObject);
+        for (GamesObject gamesObject : gamesObjects) {
+            session.save(gamesObject);
+        }
         session.getTransaction().commit();
         session.close();
     }
@@ -166,9 +168,29 @@ public class Persist {
         session.close();
     }
 
-    public void updateTeamsHibernate(TeamsObject teamsObject){
+    public void endOfGamesHibernate(List<GamesObject> gamesObjects){
         Session session = sessionFactory.openSession();
-        session.update(teamsObject);
+        session.beginTransaction();
+        for (GamesObject gamesObject : gamesObjects) {
+            gamesObject.setLive(false);
+            session.update(gamesObject);
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+
+
+
+
+
+    public void updateTeamsHibernate(List<TeamsObject> teamsObjects){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        for (TeamsObject teamsObject : teamsObjects) {
+            session.update(teamsObject);
+        }
+        session.getTransaction().commit();
         session.close();
     }
 

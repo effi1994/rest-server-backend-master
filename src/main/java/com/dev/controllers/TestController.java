@@ -18,7 +18,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -84,6 +84,7 @@ public class TestController {
         List<GamesObject> liveGames = persist.getGamesHibernate(true);
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
         List<GamesObject> allGames = new ArrayList<>();
+        HashMap<Integer, Integer> errorMap = new HashMap();
         allGames.addAll(liveGames);
         allGames.addAll(endedGames);
         for (GamesObject gamesObject : allGames) {
@@ -91,9 +92,13 @@ public class TestController {
 
             }
         }
-
-
-
+        // todo: optimize the oop
+       if (success){
+           persist.addGamesHibernate(newGamesObject);
+           gameAddedResponse = new BasicResponse(true, 0);
+       }else {
+           gameAddedResponse = new GameAddedResponse(false,1,errorMap);
+       }
 
         return gameAddedResponse;
     }
