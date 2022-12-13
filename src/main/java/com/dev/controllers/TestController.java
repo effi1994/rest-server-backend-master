@@ -105,17 +105,6 @@ public class TestController {
 
 
 
-
-
-/*    @RequestMapping(value = "/test", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object test () {
-        return new Date().toString();
-    }*/
-
-
-
-
-
 /*    @RequestMapping(value = "/sign-in", method = RequestMethod.POST)
     public BasicResponse signIn (String username, String password) {
         BasicResponse basicResponse = null;
@@ -172,6 +161,21 @@ public class TestController {
         return myHash;
     }
 
+    @RequestMapping(value = "/end-games", method = RequestMethod.POST)
+    public void endGames(List<GamesObject> gamesObjects) {
+       persist.endOfGamesHibernate(gamesObjects);
+    }
+
+    @RequestMapping(value = "/update-teams", method = RequestMethod.POST)
+    public void updateTeams(List<TeamsObject> teamsObjects){
+        persist.updateTeamsHibernate(teamsObjects);
+    }
+
+
+
+
+
+
     private boolean checkIfUsernameExists (String username) {
         boolean exists = false;
         for (User user : this.myUsers) {
@@ -186,35 +190,6 @@ public class TestController {
 
 
 /*    @RequestMapping(value = "/save-note", method = {RequestMethod.GET, RequestMethod.POST})
-    public boolean saveNote (String note, String token) {
-        boolean success = false;
-        if (utils.validateNote(note)) {
-            User user = persist.getUserByToken(token);
-            if (user != null) {
-                persist.addNote(user.getId(), note);
-                success = true;
-            } else {
-                System.out.println("cannot find match for token " + token);
-            }
-        } else {
-            System.out.println("note text was not validated");
-        }
-        return success;
-    }
-
-    @RequestMapping(value = "/get-all-notes", method = {RequestMethod.GET, RequestMethod.POST})
-    public List<String> getAllNotes (String token) {
-        List<String> notes = null;
-        User user = persist.getUserByToken(token);
-        if (user != null) {
-            notes = persist.getNotesByUserId(user.getId());
-        } else {
-            System.out.println("cannot find match for token " + token);
-        }
-
-        return notes;
-    }*/
-
     private User getUserByToken (String token) {
         User matchedUser = null;
         if (token != null) {
