@@ -6,6 +6,7 @@ import com.dev.objects.UserObject;
 import com.dev.responses.BasicResponse;
 import com.dev.responses.GameAddedResponse;
 import com.dev.responses.SignInResponse;
+import com.dev.responses.TeamsResponse;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +40,24 @@ public class TestController {
         return liveGames;
     }
 
-    @RequestMapping(value = "/get-ended-games", method = RequestMethod.GET)
+    @RequestMapping(value = "/get-end-games", method = RequestMethod.GET)
     public List<GamesObject> getEndedGames() {
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
         return endedGames;
     }
 
     @RequestMapping(value = "/get-all-teams", method = RequestMethod.GET)
-    public List<TeamsObject> getAllTeams() {
+    public BasicResponse getAllTeams() {
+        BasicResponse getTeamsResponse = null;
         List<TeamsObject> allTeams = persist.getAllTeamsHibernate();
-        return allTeams;
+        if (allTeams != null) {
+            getTeamsResponse = new TeamsResponse(true, 0, allTeams);
+
+        } else {
+            getTeamsResponse = new BasicResponse(false, 1);
+        }
+
+        return getTeamsResponse;
     }
 
     @RequestMapping(value = "/add-games", method = RequestMethod.POST)
