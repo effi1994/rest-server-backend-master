@@ -184,6 +184,8 @@ public class Persist {
 
 
 
+
+
     public void updateTeamsHibernate(List<TeamsObject> teamsObjects){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -228,6 +230,16 @@ public class Persist {
         Session session = sessionFactory.openSession();
         userObject = (UserObject) session.createQuery("FROM UserObject where  username=:username AND token=:token").
                    setParameter("username",username).setParameter("token",token)
+                .uniqueResult();
+        session.close();
+        return userObject;
+    }
+
+
+    public UserObject getUserByTokenHibernate(String token){
+        UserObject userObject = null;
+        Session session = sessionFactory.openSession();
+        userObject = (UserObject) session.createQuery("FROM UserObject where token=:token").setParameter("token",token)
                 .uniqueResult();
         session.close();
         return userObject;

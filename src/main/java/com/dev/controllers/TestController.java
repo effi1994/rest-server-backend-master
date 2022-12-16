@@ -5,6 +5,7 @@ import com.dev.objects.TeamsObject;
 import com.dev.objects.UserObject;
 import com.dev.responses.BasicResponse;
 import com.dev.responses.GameAddedResponse;
+import com.dev.responses.SignInResponse;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,7 @@ public class TestController {
         String token = utils.createHash(username, password);
         UserObject userObject = persist.getUserByLoginHibernate(username, token);
         if (userObject != null) {
-            basicResponse = new BasicResponse(true, 0);
+            basicResponse = new SignInResponse(true, 0,userObject);
         } else {
             basicResponse = new BasicResponse(false, 1);
         }
@@ -123,6 +124,18 @@ public class TestController {
     @RequestMapping(value = "/update-teams", method = RequestMethod.POST)
     public void updateTeams(List<TeamsObject> teamsObjects){
         persist.updateTeamsHibernate(teamsObjects);
+    }
+
+@RequestMapping(value = "/get-user-by-token",method = RequestMethod.POST)
+    public BasicResponse getUserByToken(String token){
+         BasicResponse basicResponse=null;
+        UserObject userObject = persist.getUserByTokenHibernate(token);
+        if (userObject!=null) {
+            basicResponse = new SignInResponse(true, 0, userObject);
+        }else {
+            basicResponse = new BasicResponse(false,1);
+        }
+        return basicResponse;
     }
 
 
