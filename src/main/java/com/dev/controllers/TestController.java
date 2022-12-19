@@ -128,22 +128,33 @@ public class TestController {
     }
 
     @RequestMapping(value = "/update-game", method = RequestMethod.POST)
-    public void updateGame(GamesObject gamesObject) {
+    public BasicResponse updateGame(GamesObject gamesObject) {
+        BasicResponse basicResponse = null;
         if (gamesObject.getLive()) {
             if (gamesObject.getHomeScore() >= 0 && gamesObject.getForeignScore() >= 0) {
                 persist.updateGameHibernate(gamesObject);
+                basicResponse = new BasicResponse(true, 0);
+            }else {
+                basicResponse = new BasicResponse(false, 1);
             }
         }
+        return basicResponse;
     }
 
     @RequestMapping(value = "/end-games", method = RequestMethod.POST)
-    public void endGames(List<GamesObject> gamesObjects) {
-       persist.endOfGamesHibernate(gamesObjects);
+    public BasicResponse endGames(List<GamesObject> gamesObjects) {
+        BasicResponse basicResponse = null;
+        persist.endOfGamesHibernate(gamesObjects);
+        basicResponse = new BasicResponse(true, 0);
+        return basicResponse;
     }
 
     @RequestMapping(value = "/update-teams", method = RequestMethod.POST)
-    public void updateTeams(List<TeamsObject> teamsObjects){
+    public BasicResponse updateTeams(List<TeamsObject> teamsObjects){
+        BasicResponse basicResponse = null;
         persist.updateTeamsHibernate(teamsObjects);
+        basicResponse = new BasicResponse(true, 0);
+        return basicResponse;
     }
 
 @RequestMapping(value = "/get-user-by-token",method = RequestMethod.POST)
