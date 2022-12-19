@@ -3,10 +3,7 @@ package com.dev.controllers;
 import com.dev.objects.GamesObject;
 import com.dev.objects.TeamsObject;
 import com.dev.objects.UserObject;
-import com.dev.responses.BasicResponse;
-import com.dev.responses.GameAddedResponse;
-import com.dev.responses.SignInResponse;
-import com.dev.responses.TeamsResponse;
+import com.dev.responses.*;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +32,29 @@ public class TestController {
 
 
     @RequestMapping(value = "/get-live-games", method = RequestMethod.GET)
-    public List<GamesObject> getLiveGames() {
+    public BasicResponse getLiveGames() {
+        BasicResponse getLiveGamesResponse = null;
         List<GamesObject> liveGames = persist.getGamesHibernate(true);
-        return liveGames;
+        if (liveGames != null) {
+            getLiveGamesResponse = new GamesResponse(true, 0,liveGames);
+        } else {
+            getLiveGamesResponse = new BasicResponse(false, 1);
+        }
+
+        return getLiveGamesResponse;
     }
 
     @RequestMapping(value = "/get-end-games", method = RequestMethod.GET)
-    public List<GamesObject> getEndedGames() {
+    public BasicResponse getEndedGames() {
+        BasicResponse getEndedGamesResponse = null;
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
-        return endedGames;
+          if (endedGames != null) {
+            getEndedGamesResponse = new GamesResponse(true, 0,endedGames);
+        } else {
+            getEndedGamesResponse = new BasicResponse(false, 1);
+        }
+        return getEndedGamesResponse;
+
     }
 
     @RequestMapping(value = "/get-all-teams", method = RequestMethod.GET)
