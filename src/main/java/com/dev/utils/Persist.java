@@ -37,6 +37,7 @@ public class Persist {
                     "jdbc:mysql://localhost:3306/football_project?autoReconnect=true&useSSL=false", "root", "1234");
             System.out.println("Successfully connected to DB");
           this.defaultDBContent();
+
             System.out.println();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,16 +149,27 @@ public class Persist {
         return gamesObjects;
     }
 
-    public void addGamesHibernate(List<GamesObject> gamesObjects){
+    public List<GamesObject> getAllGamesHibernate(){
+        List<GamesObject> gamesObjects = new ArrayList<>();
+        Session session = sessionFactory.openSession();
+        gamesObjects = session.createQuery("FROM GamesObject").list();
+        session.close();
+        return gamesObjects;
+    }
+
+    public List<GamesObject> addGamesHibernate(List<GamesObject> gamesObjects){
+        List<GamesObject> gamesObjects1 = new ArrayList<>();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         for (GamesObject gamesObject : gamesObjects) {
-            session.save(gamesObject);
+            int id = (int) session.save(gamesObject);
+              gamesObject.setId(id);
+            gamesObjects1.add(gamesObject);
         }
         session.getTransaction().commit();
         session.close();
+        return gamesObjects1;
     }
-
 
 
     public void updateGameHibernate(GamesObject gamesObject){

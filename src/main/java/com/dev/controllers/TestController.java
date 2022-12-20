@@ -46,6 +46,7 @@ public class TestController {
 
     @RequestMapping(value = "/get-end-games", method = RequestMethod.GET)
     public BasicResponse getEndedGames() {
+        System.out.println("getEndedGames");
         BasicResponse getEndedGamesResponse = null;
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
           if (endedGames != null) {
@@ -56,6 +57,20 @@ public class TestController {
         return getEndedGamesResponse;
 
     }
+
+    @RequestMapping(value = "/get-all-games", method = RequestMethod.GET)
+     public BasicResponse getAllGames() {
+        System.out.println("getAllGames");
+        BasicResponse getAllGamesResponse = null;
+        List<GamesObject> allGames = persist.getAllGamesHibernate();
+        if (allGames != null) {
+            getAllGamesResponse = new GamesResponse(true, 0,allGames);
+        } else {
+            getAllGamesResponse = new BasicResponse(false, 1);
+        }
+        return getAllGamesResponse;
+    }
+
 
     @RequestMapping(value = "/get-all-teams", method = RequestMethod.GET)
     public BasicResponse getAllTeams() {
@@ -104,8 +119,9 @@ public class TestController {
         }
         // todo: optimize the oop
        if (success){
-           persist.addGamesHibernate(newGamesObject);
-           gameAddedResponse = new BasicResponse(true, 0);
+           List<GamesObject> gamesLive = new ArrayList<>();
+         gamesLive=  persist.addGamesHibernate(newGamesObject);
+           gameAddedResponse = new GamesResponse(true, 0,gamesLive);
        }else {
            gameAddedResponse = new GameAddedResponse(false,1,errorMap);
        }
