@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class Utils {
 
+    //TODO: Make a validate username and password
+
     public boolean validateUsername (String username) {
         boolean valid = false;
         if (username != null) {

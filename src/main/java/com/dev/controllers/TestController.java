@@ -8,6 +8,7 @@ import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.dev.utils.Constants;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -36,9 +37,9 @@ public class TestController {
         BasicResponse getLiveGamesResponse = null;
         List<GamesObject> liveGames = persist.getGamesHibernate(true);
         if (liveGames != null) {
-            getLiveGamesResponse = new GamesResponse(true, 0,liveGames);
+            getLiveGamesResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,liveGames);
         } else {
-            getLiveGamesResponse = new BasicResponse(false, 1);
+            getLiveGamesResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
 
         return getLiveGamesResponse;
@@ -46,13 +47,12 @@ public class TestController {
 
     @RequestMapping(value = "/get-end-games", method = RequestMethod.GET)
     public BasicResponse getEndedGames() {
-        System.out.println("getEndedGames");
         BasicResponse getEndedGamesResponse = null;
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
           if (endedGames != null) {
-            getEndedGamesResponse = new GamesResponse(true, 0,endedGames);
+            getEndedGamesResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,endedGames);
         } else {
-            getEndedGamesResponse = new BasicResponse(false, 1);
+            getEndedGamesResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
         return getEndedGamesResponse;
 
@@ -64,9 +64,9 @@ public class TestController {
         BasicResponse getAllGamesResponse = null;
         List<GamesObject> allGames = persist.getAllGamesHibernate();
         if (allGames != null) {
-            getAllGamesResponse = new GamesResponse(true, 0,allGames);
+            getAllGamesResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,allGames);
         } else {
-            getAllGamesResponse = new BasicResponse(false, 1);
+            getAllGamesResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
         return getAllGamesResponse;
     }
@@ -77,10 +77,10 @@ public class TestController {
         BasicResponse getTeamsResponse = null;
         List<TeamsObject> allTeams = persist.getAllTeamsHibernate();
         if (allTeams != null) {
-            getTeamsResponse = new TeamsResponse(true, 0, allTeams);
+            getTeamsResponse = new TeamsResponse(true, Constants.ERROR_CODE_ZERO, allTeams);
 
         } else {
-            getTeamsResponse = new BasicResponse(false, 1);
+            getTeamsResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
 
         return getTeamsResponse;
@@ -88,7 +88,6 @@ public class TestController {
 
     @PostMapping(value = "/add-games")
     public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObject) {
-        System.out.println(newGamesObject);
         BasicResponse gameAddedResponse = null;
        List<GamesObject> liveGames = persist.getGamesHibernate(true);
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
@@ -106,14 +105,14 @@ public class TestController {
             }
 
             if (newGameObject.getHomeTeam().equals(newGameObject.getForeignTeam())) {
-                errorMap.put(newGameObject.getId(), 1);
+                errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_ONE);
                 success = false;
 
             }
-            if (allGames.size() >0) {
+            if (allGames.size() > Constants.ZERO) {
                 for (GamesObject existGame : allGames) {
                     if (existGame.getGameSession() == newGameObject.getGameSession()) {
-                        errorMap.put(newGameObject.getId(), 2);
+                        errorMap.put(newGameObject.getId(),Constants.ERROR_MAP_TWO);
                         success = false;
                     }
                 }
@@ -123,9 +122,9 @@ public class TestController {
        if (success){
            List<GamesObject> gamesLive = new ArrayList<>();
          gamesLive=  persist.addGamesHibernate(newGamesObject);
-           gameAddedResponse = new GamesResponse(true, 0,gamesLive);
+           gameAddedResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,gamesLive);
        }else {
-           gameAddedResponse = new GameAddedResponse(false,1,errorMap);
+           gameAddedResponse = new GameAddedResponse(false,Constants.ERROR_CODE_ONE,errorMap);
        }
 
         return gameAddedResponse;
@@ -138,34 +137,31 @@ public class TestController {
         String token = utils.createHash(username, password);
         UserObject userObject = persist.getUserByLoginHibernate(username, token);
         if (userObject != null) {
-            basicResponse = new SignInResponse(true, 0,userObject);
+            basicResponse = new SignInResponse(true,Constants.ERROR_CODE_ZERO,userObject);
         } else {
-            basicResponse = new BasicResponse(false, 1);
+            basicResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
         return basicResponse;
     }
 
     @RequestMapping(value = "/update-game", method = RequestMethod.POST)
     public BasicResponse updateGame(GamesObject gamesObject) {
-        System.out.println(gamesObject.toString());
         BasicResponse basicResponse = null;
-
-            if (gamesObject.getHomeScore() >= 0 && gamesObject.getForeignScore() >= 0) {
-                System.out.println("hghg");
+            if (gamesObject.getHomeScore() >= Constants.ZERO && gamesObject.getForeignScore() >= Constants.ZERO) {
                 persist.updateGameHibernate(gamesObject);
-                basicResponse = new BasicResponse(true, 0);
+                basicResponse = new BasicResponse(true, Constants.ERROR_CODE_ZERO);
             }else {
-                basicResponse = new BasicResponse(false, 1);
+                basicResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
             }
 
         return basicResponse;
     }
 
-    @RequestMapping(value = "/end-games", method = RequestMethod.POST)
-    public BasicResponse endGames(List<GamesObject> gamesObjects) {
+    @PostMapping(value = "/end-games")
+    public BasicResponse endGames(  @RequestBody List<GamesObject> gamesObjects) {
         BasicResponse basicResponse = null;
         persist.endOfGamesHibernate(gamesObjects);
-        basicResponse = new BasicResponse(true, 0);
+        basicResponse = new BasicResponse(true, Constants.ERROR_CODE_ZERO);
         return basicResponse;
     }
 
@@ -173,7 +169,7 @@ public class TestController {
     public BasicResponse updateTeams(List<TeamsObject> teamsObjects){
         BasicResponse basicResponse = null;
         persist.updateTeamsHibernate(teamsObjects);
-        basicResponse = new BasicResponse(true, 0);
+        basicResponse = new BasicResponse(true, Constants.ERROR_CODE_ZERO);
         return basicResponse;
     }
 
@@ -182,50 +178,10 @@ public class TestController {
          BasicResponse basicResponse=null;
         UserObject userObject = persist.getUserByTokenHibernate(token);
         if (userObject!=null) {
-            basicResponse = new SignInResponse(true, 0, userObject);
+            basicResponse = new SignInResponse(true, Constants.ERROR_CODE_ZERO, userObject);
         }else {
-            basicResponse = new BasicResponse(false,1);
+            basicResponse = new BasicResponse(false,Constants.ERROR_CODE_ONE);
         }
         return basicResponse;
     }
-
-
-
-
-
-
-
-
-  /*  private boolean checkIfUsernameExists (String username) {
-        boolean exists = false;
-        for (User user : this.myUsers) {
-            if (user.getUsername().equals(username)) {
-                exists = true;
-                break;
-            }
-        }
-
-        return exists;
-    }*/
-
-
-/*    @RequestMapping(value = "/save-note", method = {RequestMethod.GET, RequestMethod.POST})
-    private User getUserByToken (String token) {
-        User matchedUser = null;
-        if (token != null) {
-            for (User user : this.myUsers) {
-                if (user.getToken().equals(token)) {
-                    matchedUser = user;
-                    break;
-                }
-            }
-        }
-        return matchedUser;
-    }
-
-
-
-
-}
- */
 }

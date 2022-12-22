@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import com.dev.utils.Constants;
 import javax.annotation.PostConstruct;
 import java.sql.*;
 import java.util.ArrayList;
@@ -91,24 +91,6 @@ public class Persist {
         session.close();
     }
 
-    public List<User> getAllUsers() {
-        List<User> allUsers = new ArrayList<>();
-        try {
-            ResultSet resultSet =
-                    this.connection
-                            .createStatement()
-                            .executeQuery("SELECT username, token FROM users");
-            while (resultSet.next()) {
-                String token = resultSet.getString("token");
-                String username = resultSet.getString("username");
-                User user = new User(username, token);
-                allUsers.add(user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return allUsers;
-    }
 
     public List<TeamsObject> getAllTeamsHibernate() {
         List<TeamsObject> allTeams = new ArrayList<>();
@@ -121,23 +103,6 @@ public class Persist {
     }
 
 
-    public boolean usernameAvailableHibernate(String username){
-        boolean available = false;
-        UserObject userObject = null;
-        Session session = sessionFactory.openSession();
-        userObject = (UserObject) session.createQuery("FROM UserObject where  username=:username").
-                setParameter("username",username)
-                .uniqueResult();
-
-        if (userObject ==null){
-            available=true;
-        }else {
-            available=false;
-        }
-        session.close();
-        return  available;
-
-    }
 
     public List<GamesObject> getGamesHibernate(boolean live){
         List<GamesObject> gamesObjects = new ArrayList<>();
@@ -219,7 +184,7 @@ public class Persist {
         boolean isEmpty=false;
         Session session = sessionFactory.openSession();
         List<UserObject> userObjects = session.createQuery("FROM UserObject ").list();
-        if (userObjects.size()==0){
+        if (userObjects.size()==Constants.ZERO_OBJECT_SIZE){
             isEmpty=true;
         }
         session.close();
@@ -230,7 +195,7 @@ public class Persist {
         boolean isEmpty=false;
         Session session = sessionFactory.openSession();
         List<TeamsObject> teamObjects = session.createQuery("FROM TeamsObject ").list();
-        if (teamObjects.size()==0){
+        if (teamObjects.size()==Constants.ZERO_OBJECT_SIZE){
             isEmpty=true;
         }
         session.close();

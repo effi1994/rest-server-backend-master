@@ -3,8 +3,6 @@ package com.dev.objects;
 
 import javax.persistence.*;
 
-//effi ata shoma uti /**/
-
 
 @Entity
 @Table(name = "teams",uniqueConstraints = {
