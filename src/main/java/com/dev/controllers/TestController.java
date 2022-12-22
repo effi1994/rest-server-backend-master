@@ -161,9 +161,10 @@ public class TestController {
         return basicResponse;
     }
 
-    @RequestMapping(value = "/end-games", method = RequestMethod.POST)
-    public BasicResponse endGames(List<GamesObject> gamesObjects) {
+    @PostMapping(value = "/end-games")
+    public BasicResponse endGames(  @RequestBody List<GamesObject> gamesObjects) {
         BasicResponse basicResponse = null;
+        System.out.println("pp");
         persist.endOfGamesHibernate(gamesObjects);
         basicResponse = new BasicResponse(true, 0);
         return basicResponse;
