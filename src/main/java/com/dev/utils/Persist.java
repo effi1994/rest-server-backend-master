@@ -34,7 +34,7 @@ public class Persist {
     public void createConnectionToDatabase () {
         try {
             this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/football_project?autoReconnect=true&useSSL=false", "root", "1234");
+                    "jdbc:mysql://localhost:3306/football_project", "root", "1234");
             System.out.println("Successfully connected to DB");
           this.defaultDBContent();
 
@@ -59,7 +59,7 @@ public class Persist {
                     "LiverPoll",
                     "Barcelona",
                     "Inter",
-                    "FC Bayern München",
+                    "FC Bayern Munchen",
                     "Chelsea",
                     "Real Madrid CF",
                     "Manchester City",
@@ -139,11 +139,11 @@ public class Persist {
 
     }
 
-    public List<GamesObject> getGamesHibernate(boolean isLive){
+    public List<GamesObject> getGamesHibernate(boolean live){
         List<GamesObject> gamesObjects = new ArrayList<>();
         Session session = sessionFactory.openSession();
-        gamesObjects = session.createQuery("FROM GamesObject where isLive=:isLive").
-                setParameter("isLive",isLive)
+        gamesObjects = session.createQuery("FROM GamesObject where live=:live").
+                setParameter("live",live)
                 .list();
         session.close();
         return gamesObjects;

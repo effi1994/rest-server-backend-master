@@ -1,4 +1,5 @@
 package com.dev.objects;
+
 import javax.persistence.*;
 @Entity
 @Table(name = "games")
@@ -23,8 +24,8 @@ public class GamesObject {
     @Column
     private int foreignScore;
 
-    @Column
-    private Boolean isLive;
+    @Column(columnDefinition = "boolean")
+    private Boolean live;
     @Column
     private String userId;
 
@@ -37,8 +38,9 @@ public class GamesObject {
         this.foreignTeam = foreignTeam;
         this.homeScore = homeScore;
         this.foreignScore = foreignScore;
-        this.isLive = isLive;
+        this.live = isLive;
         this.userId = userId;
+
 
     }
 
@@ -98,11 +100,11 @@ public class GamesObject {
     }
 
     public Boolean getLive() {
-        return isLive;
+        return live;
     }
 
-    public void setLive(Boolean live) {
-        isLive = live;
+    public void setLive(Boolean isLive) {
+        this.live = isLive;
     }
 
     public String getUserId() {

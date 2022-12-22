@@ -7,15 +7,15 @@ import com.dev.responses.*;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class TestController {
 
 
@@ -86,16 +86,19 @@ public class TestController {
         return getTeamsResponse;
     }
 
-    @RequestMapping(value = "/add-games", method = RequestMethod.POST)
-    public BasicResponse addGames(List<GamesObject> newGamesObject) {
+    @PostMapping(value = "/add-games")
+    public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObject) {
+        System.out.println(newGamesObject);
         BasicResponse gameAddedResponse = null;
-        List<GamesObject> liveGames = persist.getGamesHibernate(true);
+       List<GamesObject> liveGames = persist.getGamesHibernate(true);
         List<GamesObject> endedGames = persist.getGamesHibernate(false);
         List<GamesObject> allGames = new ArrayList<>();
         HashMap<Integer, Integer> errorMap = new HashMap();
-        allGames.addAll(liveGames);
+       allGames.addAll(liveGames);
         allGames.addAll(endedGames);
         boolean success = true;
+
+
 
         for (GamesObject newGameObject : newGamesObject) {
             if (!newGameObject.getLive()) {
@@ -107,15 +110,14 @@ public class TestController {
                 success = false;
 
             }
-
-            for (GamesObject existGame : allGames) {
-                if (existGame.getGameSession() == newGameObject.getGameSession()) {
-                    errorMap.put(newGameObject.getId(),2);
-                    success = false;
+            if (allGames.size() >0) {
+                for (GamesObject existGame : allGames) {
+                    if (existGame.getGameSession() == newGameObject.getGameSession()) {
+                        errorMap.put(newGameObject.getId(), 2);
+                        success = false;
+                    }
                 }
             }
-
-
         }
         // todo: optimize the oop
        if (success){
