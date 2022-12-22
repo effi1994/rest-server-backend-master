@@ -147,15 +147,17 @@ public class TestController {
 
     @RequestMapping(value = "/update-game", method = RequestMethod.POST)
     public BasicResponse updateGame(GamesObject gamesObject) {
+        System.out.println(gamesObject.toString());
         BasicResponse basicResponse = null;
-        if (gamesObject.getLive()) {
+
             if (gamesObject.getHomeScore() >= 0 && gamesObject.getForeignScore() >= 0) {
+                System.out.println("hghg");
                 persist.updateGameHibernate(gamesObject);
                 basicResponse = new BasicResponse(true, 0);
             }else {
                 basicResponse = new BasicResponse(false, 1);
             }
-        }
+
         return basicResponse;
     }
 
