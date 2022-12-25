@@ -34,7 +34,8 @@ public class Persist {
     public void createConnectionToDatabase () {
         try {
             this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/football_project", "root", "1234");
+                    "jdbc:mysql://localhost:3306/football_project?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf8"
+                    , "root", "1234");
             System.out.println("Successfully connected to DB");
           this.defaultDBContent();
 
@@ -73,7 +74,7 @@ public class Persist {
             userObject.setId(1);
 
             for (int i = 0; i < teamNames.length; i++) {
-                TeamsObject teamObject=new  TeamsObject(0,0,0,0,teamNames[i],0,userObject);
+                TeamsObject teamObject=new  TeamsObject(teamNames[i],userObject);
                 teamObjects.add(teamObject);
             }
             this.addTeamsHibernate(teamObjects);
@@ -156,22 +157,6 @@ public class Persist {
         session.close();
     }
 
-
-
-
-
-
-
-
-    public void updateTeamsHibernate(List<TeamsObject> teamsObjects){
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        for (TeamsObject teamsObject : teamsObjects) {
-            session.update(teamsObject);
-        }
-        session.getTransaction().commit();
-        session.close();
-    }
 
     public void addUserHibernate(UserObject userObject){
         Session session = sessionFactory.openSession();

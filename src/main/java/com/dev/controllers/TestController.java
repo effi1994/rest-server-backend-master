@@ -69,6 +69,7 @@ public class TestController {
             getAllGamesResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
         }
         return getAllGamesResponse;
+
     }
 
 
@@ -166,13 +167,6 @@ public class TestController {
         return basicResponse;
     }
 
-    @RequestMapping(value = "/update-teams", method = RequestMethod.POST)
-    public BasicResponse updateTeams(List<TeamsObject> teamsObjects){
-        BasicResponse basicResponse = null;
-        persist.updateTeamsHibernate(teamsObjects);
-        basicResponse = new BasicResponse(true, Constants.ERROR_CODE_ZERO);
-        return basicResponse;
-    }
 
 @RequestMapping(value = "/get-user-by-token",method = RequestMethod.POST)
     public BasicResponse getUserByToken(String token){

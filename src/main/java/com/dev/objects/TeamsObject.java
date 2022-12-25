@@ -25,33 +25,9 @@ public class TeamsObject {
 
 
 
-    @Column
 
-    private int winning;
-
-    @Column
-
-    private int draw;
-
-    @Column
-
-    private int lost;
-
-    @Column
-
-    private int goalFrom;
-
-    @Column
-
-    private int goalLoss;
-
-    public TeamsObject(int draw,int goalFrom,int goalLoss,int lost,String nameTeams,int winning,UserObject userObject) {
+    public TeamsObject(String nameTeams,UserObject userObject) {
         this.nameTeams = nameTeams;
-        this.winning = winning;
-        this.draw = draw;
-        this.lost = lost;
-        this.goalFrom = goalFrom;
-        this.goalLoss = goalLoss;
         this.userObject = userObject;
     }
 
@@ -83,45 +59,6 @@ public class TeamsObject {
         this.nameTeams = nameTeams;
     }
 
-    public int getWinning() {
-        return winning;
-    }
-
-    public void setWinning(int winning) {
-        this.winning = winning;
-    }
-
-    public int getDraw() {
-        return draw;
-    }
-
-    public void setDraw(int draw) {
-        this.draw = draw;
-    }
-
-    public int getLost() {
-        return lost;
-    }
-
-    public void setLost(int lost) {
-        this.lost = lost;
-    }
-
-    public int getGoalFrom() {
-        return goalFrom;
-    }
-
-    public void setGoalFrom(int goalFrom) {
-        this.goalFrom = goalFrom;
-    }
-
-    public int getGoalLoss() {
-        return goalLoss;
-    }
-
-    public void setGoalLoss(int goalLoss) {
-        this.goalLoss = goalLoss;
-    }
 
     public UserObject getUserObject() {
         return userObject;
