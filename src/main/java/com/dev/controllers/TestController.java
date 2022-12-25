@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class TestController {
 
 
@@ -88,46 +88,18 @@ public class TestController {
     }
 
     @PostMapping(value = "/add-games")
-    public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObject) {
+    public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObjects) {
         BasicResponse gameAddedResponse = null;
        List<GamesObject> liveGames = persist.getGamesHibernate(true);
-        List<GamesObject> endedGames = persist.getGamesHibernate(false);
-        List<GamesObject> allGames = new ArrayList<>();
-        HashMap<Integer, Integer> errorMap = new HashMap();
-       allGames.addAll(liveGames);
-        allGames.addAll(endedGames);
-        boolean success = true;
-
-
-
-        for (GamesObject newGameObject : newGamesObject) {
-            if (!newGameObject.getLive()) {
-                newGameObject.setLive(true);
-            }
-
-            if (newGameObject.getHomeTeam().equals(newGameObject.getForeignTeam())) {
-                errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_ONE);
-                success = false;
-
-            }
-            if (allGames.size() > Constants.ZERO) {
-                for (GamesObject existGame : allGames) {
-                    if (existGame.getGameSession() == newGameObject.getGameSession()) {
-                        errorMap.put(newGameObject.getId(),Constants.ERROR_MAP_TWO);
-                        success = false;
-                    }
-                }
-            }
-        }
-        // todo: optimize the oop
-       if (success){
+        HashMap<Integer, Integer> errorMap = null;
+        errorMap= utils.checkIfTeamExistInGames(newGamesObjects, liveGames);
+       if (errorMap.size() ==0){
            List<GamesObject> gamesLive = new ArrayList<>();
-         gamesLive=  persist.addGamesHibernate(newGamesObject);
+         gamesLive=  persist.addGamesHibernate(newGamesObjects);
            gameAddedResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,gamesLive);
        }else {
            gameAddedResponse = new GameAddedResponse(false,Constants.ERROR_CODE_ONE,errorMap);
        }
-
         return gameAddedResponse;
     }
 
@@ -180,3 +152,4 @@ public class TestController {
         return basicResponse;
     }
 }
+

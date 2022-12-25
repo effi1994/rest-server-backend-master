@@ -1,10 +1,13 @@
 package com.dev.utils;
 
+import com.dev.objects.GamesObject;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class Utils {
@@ -53,5 +56,31 @@ public class Utils {
         }
 
         return myHash;
+    }
+
+    public HashMap<Integer, Integer> checkIfTeamExistInGames(List<GamesObject> newGamesObjects,List<GamesObject> liveGames){
+        HashMap<Integer, Integer> errorMap = new HashMap();
+        for (GamesObject newGameObject : newGamesObjects) {
+            if (!newGameObject.getLive()) {
+                newGameObject.setLive(true);
+            }
+            if (newGameObject.getHomeTeam().equals(newGameObject.getForeignTeam())) {
+                errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_ONE);
+                return errorMap;
+            }
+            if (liveGames.size() >0){
+                for (GamesObject liveGame : liveGames) {
+                    if (liveGame.getHomeTeam().equals(newGameObject.getHomeTeam()) ||
+                            liveGame.getHomeTeam().equals(newGameObject.getForeignTeam()) ||
+                            liveGame.getForeignTeam().equals(newGameObject.getHomeTeam()) ||
+                            liveGame.getForeignTeam().equals(newGameObject.getForeignTeam())) {
+                        errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_TWO);
+                        return errorMap;
+                    }
+                }
+            }
+
+        }
+        return errorMap;
     }
 }
