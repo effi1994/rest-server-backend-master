@@ -91,14 +91,13 @@ public class TestController {
     public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObjects) {
         BasicResponse gameAddedResponse = null;
        List<GamesObject> liveGames = persist.getGamesHibernate(true);
-        HashMap<Integer, Integer> errorMap = null;
-        errorMap= utils.checkIfTeamExistInGames(newGamesObjects, liveGames);
-       if (errorMap.size() ==0){
+        int errorCode = utils.checkIfTeamExistInGames(newGamesObjects,liveGames);
+       if (errorCode ==0){
            List<GamesObject> gamesLive = new ArrayList<>();
          gamesLive=  persist.addGamesHibernate(newGamesObjects);
            gameAddedResponse = new GamesResponse(true, Constants.ERROR_CODE_ZERO,gamesLive);
        }else {
-           gameAddedResponse = new GameAddedResponse(false,Constants.ERROR_CODE_ONE,errorMap);
+           gameAddedResponse = new BasicResponse(false, errorCode);
        }
         return gameAddedResponse;
     }

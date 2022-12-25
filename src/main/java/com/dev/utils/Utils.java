@@ -58,15 +58,14 @@ public class Utils {
         return myHash;
     }
 
-    public HashMap<Integer, Integer> checkIfTeamExistInGames(List<GamesObject> newGamesObjects,List<GamesObject> liveGames){
-        HashMap<Integer, Integer> errorMap = new HashMap();
+    public int checkIfTeamExistInGames(List<GamesObject> newGamesObjects,List<GamesObject> liveGames){
+
         for (GamesObject newGameObject : newGamesObjects) {
             if (!newGameObject.getLive()) {
                 newGameObject.setLive(true);
             }
             if (newGameObject.getHomeTeam().equals(newGameObject.getForeignTeam())) {
-                errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_ONE);
-                return errorMap;
+                return 1;
             }
             if (liveGames.size() >0){
                 for (GamesObject liveGame : liveGames) {
@@ -74,13 +73,12 @@ public class Utils {
                             liveGame.getHomeTeam().equals(newGameObject.getForeignTeam()) ||
                             liveGame.getForeignTeam().equals(newGameObject.getHomeTeam()) ||
                             liveGame.getForeignTeam().equals(newGameObject.getForeignTeam())) {
-                        errorMap.put(newGameObject.getId(), Constants.ERROR_MAP_TWO);
-                        return errorMap;
+                        return 2;
                     }
                 }
             }
 
         }
-        return errorMap;
+        return 0;
     }
 }
