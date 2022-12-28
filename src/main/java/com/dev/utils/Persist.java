@@ -3,13 +3,12 @@ package com.dev.utils;
 
 import com.dev.objects.GamesObject;
 import com.dev.objects.TeamsObject;
-import com.dev.objects.User;
 import com.dev.objects.UserObject;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.dev.utils.Constants;
+
 import javax.annotation.PostConstruct;
 import java.sql.*;
 import java.util.ArrayList;

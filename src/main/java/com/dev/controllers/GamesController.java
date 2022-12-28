@@ -1,8 +1,6 @@
 package com.dev.controllers;
 
 import com.dev.objects.GamesObject;
-import com.dev.objects.TeamsObject;
-import com.dev.objects.UserObject;
 import com.dev.responses.*;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
@@ -12,12 +10,10 @@ import com.dev.utils.Constants;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
-public class TestController {
+public class GamesController {
 
 
     @Autowired
@@ -73,19 +69,6 @@ public class TestController {
     }
 
 
-    @RequestMapping(value = "/get-all-teams", method = RequestMethod.GET)
-    public BasicResponse getAllTeams() {
-        BasicResponse getTeamsResponse = null;
-        List<TeamsObject> allTeams = persist.getAllTeamsHibernate();
-        if (allTeams != null) {
-            getTeamsResponse = new TeamsResponse(true, Constants.ERROR_CODE_ZERO, allTeams);
-
-        } else {
-            getTeamsResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
-        }
-
-        return getTeamsResponse;
-    }
 
     @PostMapping(value = "/add-games")
     public BasicResponse addGames(@RequestBody List<GamesObject> newGamesObjects) {
@@ -103,18 +86,7 @@ public class TestController {
     }
 
 
-    @RequestMapping(value = "/log-in", method = RequestMethod.POST)
-    public BasicResponse logIn(String username, String password) {
-        BasicResponse basicResponse;
-        String token = utils.createHash(username, password);
-        UserObject userObject = persist.getUserByLoginHibernate(username, token);
-        if (userObject != null) {
-            basicResponse = new SignInResponse(true,Constants.ERROR_CODE_ZERO,userObject);
-        } else {
-            basicResponse = new BasicResponse(false, Constants.ERROR_CODE_ONE);
-        }
-        return basicResponse;
-    }
+
 
     @RequestMapping(value = "/update-game", method = RequestMethod.POST)
     public BasicResponse updateGame(GamesObject gamesObject) {
@@ -132,23 +104,12 @@ public class TestController {
     @PostMapping(value = "/end-games")
     public BasicResponse endGames(  @RequestBody List<GamesObject> gamesObjects) {
         BasicResponse basicResponse = null;
-        System.out.println("pp");
         persist.endOfGamesHibernate(gamesObjects);
         basicResponse = new BasicResponse(true, Constants.ERROR_CODE_ZERO);
         return basicResponse;
     }
 
 
-@RequestMapping(value = "/get-user-by-token",method = RequestMethod.POST)
-    public BasicResponse getUserByToken(String token){
-         BasicResponse basicResponse=null;
-        UserObject userObject = persist.getUserByTokenHibernate(token);
-        if (userObject!=null) {
-            basicResponse = new SignInResponse(true, Constants.ERROR_CODE_ZERO, userObject);
-        }else {
-            basicResponse = new BasicResponse(false,Constants.ERROR_CODE_ONE);
-        }
-        return basicResponse;
-    }
+
 }
 

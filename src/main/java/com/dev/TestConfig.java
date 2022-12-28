@@ -1,7 +1,6 @@
 package com.dev;
 
 import com.dev.objects.GamesObject;
-import com.dev.objects.NoteObject;
 import com.dev.objects.TeamsObject;
 import com.dev.objects.UserObject;
 import org.hibernate.SessionFactory;

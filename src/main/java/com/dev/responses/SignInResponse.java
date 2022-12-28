@@ -1,6 +1,5 @@
 package com.dev.responses;
 
-import com.dev.objects.User;
 import com.dev.objects.UserObject;
 
 public class SignInResponse extends BasicResponse{
