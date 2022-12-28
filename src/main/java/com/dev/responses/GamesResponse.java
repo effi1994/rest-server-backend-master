@@ -12,8 +12,6 @@ public class GamesResponse  extends BasicResponse{
         this.gamesObjectList = allGames;
     }
 
-
-    //TODO: "SEE IF THERE ANY USE TO THAT LIST"
     public List<GamesObject> getGamesObjectList() {
         return gamesObjectList;
     }

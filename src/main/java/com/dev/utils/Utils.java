@@ -12,36 +12,6 @@ import java.util.List;
 @Component
 public class Utils {
 
-    //TODO: Make a validate username and password
-
-    public boolean validateUsername (String username) {
-        boolean valid = false;
-        if (username != null) {
-            if (username.contains("@")) {
-                valid = true;
-            }
-        }
-        return valid;
-    }
-
-    public boolean validatePassword (String password) {
-        boolean valid = false;
-        if (password != null) {
-            if (password.length() >= 8) {
-                valid = true;
-            }
-        }
-        return valid;
-    }
-
-    public boolean validateNote (String note) {
-        boolean valid = false;
-        if (note != null && note.length() > 0) {
-            valid = true;
-        }
-        return valid;
-    }
-
     public String createHash (String username, String password) {
         String myHash;
         try {
